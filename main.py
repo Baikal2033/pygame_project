@@ -75,14 +75,16 @@ class Garbage(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 
-class Hearts(pg.sprite.Sprite):
-    def __init__(self):
+class Heart(pg.sprite.Sprite):
+    def __init__(self, x, y):
         pg.sprite.Sprite.__init__(self)
-        original_image = pg.image.load(r'images/heart.png').convert_alpha()
-        
+        self.active = True
+        self.image = pg.image.load(r'images/heart.png').convert_alpha()
+        self.image = pg.transform.scale(self.image, (self.image.get_width() * 0.2, self.image.get_height() * 0.2))
+        self.rect = self.image.get_rect(center=(x, y))
 
-
-
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
 
 
 pg.mixer.pre_init(44100, -16, 1, 512)
@@ -100,6 +102,11 @@ score = 0
 my_text = Text(f"Счёт: {score}", 40, WHITE, (WIN_WIDTH / 2 + 400, WIN_HEIGHT * 1 / 3 - 150))
 
 my_basket = Basket()
+heart1 = Heart(70, 55)
+heart2 = Heart(130, 55)
+heart3 = Heart(190, 55)
+heart4 = Heart(250, 55)
+heart5 = Heart(310, 55)
 cnt = 0
 lives = 5
 fruit = pg.sprite.Group()
@@ -132,7 +139,17 @@ while flag_play:
         cnt = 0
 
     if lives == 0:
+        heart1.active = False
         flag_play = False
+
+    if lives == 4:
+        heart5.active = False
+    elif lives == 3:
+        heart4.active = False
+    elif lives == 2:
+        heart3.active = False
+    elif lives == 1:
+        heart2.active = False
 
     if pg.sprite.spritecollideany(my_basket, fruit, collided=pg.sprite.collide_mask):
         fruit.empty()
@@ -141,8 +158,8 @@ while flag_play:
 
     if pg.sprite.spritecollideany(my_basket, garbage, collided=pg.sprite.collide_mask):
         garbage.empty()
-        score += -1
-        lives += -1
+        score -= 1
+        lives -= 1
         my_text = Text(f"Счёт: {score}", 40, WHITE, (WIN_WIDTH / 2 + 400, WIN_HEIGHT * 1 / 3 - 150))
 
     keys = pg.key.get_pressed()
@@ -159,4 +176,14 @@ while flag_play:
     garbage.draw(screen)
     my_basket.draw(screen)
     my_text.draw(screen)
+    if heart1.active == True:
+        heart1.draw(screen)
+    if heart2.active == True:
+        heart2.draw(screen)
+    if heart3.active == True:
+        heart3.draw(screen)
+    if heart4.active == True:
+        heart4.draw(screen)
+    if heart5.active == True:
+        heart5.draw(screen)
     pg.display.update()

@@ -75,10 +75,12 @@ class Garbage(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 
-class Heards(pg.sprite.Sprite):
+class Hearts(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
-        self.original_image = pg.image.load(r'images/heard.png').convert_alpha()
+        original_image = pg.image.load(r'images/heart.png').convert_alpha()
+        
+
 
 
 
@@ -99,8 +101,8 @@ my_text = Text(f"Счёт: {score}", 40, WHITE, (WIN_WIDTH / 2 + 400, WIN_HEIGHT
 
 my_basket = Basket()
 cnt = 0
+lives = 5
 fruit = pg.sprite.Group()
-cnt2 = 0
 garbage = pg.sprite.Group()
 
 screen.blit(background, (0, 0))
@@ -129,6 +131,9 @@ while flag_play:
             garbage.add(Garbage())
         cnt = 0
 
+    if lives == 0:
+        flag_play = False
+
     if pg.sprite.spritecollideany(my_basket, fruit, collided=pg.sprite.collide_mask):
         fruit.empty()
         score += 1
@@ -137,6 +142,7 @@ while flag_play:
     if pg.sprite.spritecollideany(my_basket, garbage, collided=pg.sprite.collide_mask):
         garbage.empty()
         score += -1
+        lives += -1
         my_text = Text(f"Счёт: {score}", 40, WHITE, (WIN_WIDTH / 2 + 400, WIN_HEIGHT * 1 / 3 - 150))
 
     keys = pg.key.get_pressed()
